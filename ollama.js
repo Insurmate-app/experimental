@@ -9,19 +9,6 @@ const Groq = require("groq-sdk");
 const app = express();
 const PORT = 3002;
 
-// Load Groq API Key from environment variables
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-if (!GROQ_API_KEY) {
-  console.error("Error: GROQ_API_KEY is not defined in environment variables.");
-  process.exit(1);
-}
-
-// Initialize Groq SDK
-const groq = new Groq({
-  apiKey: GROQ_API_KEY,
-});
-
 // Configure Multer to store uploaded files in the "uploads" directory
 const upload = multer({ dest: "uploads/" });
 
