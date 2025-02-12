@@ -2,32 +2,38 @@
 
 require("dotenv").config();
 const express = require("express");
-const bodyParser = require("body-parser");
-const fs = require("fs");
+const multer = require("multer");
 const pdfParse = require("pdf-parse");
-const axios = require("axios");
+const Groq = require("groq-sdk");
 
 const app = express();
 const PORT = 3002;
 
-// Remove Groq API key configuration since Ollama doesn't require it
-app.use(bodyParser.json());
+// Load Groq API Key from environment variables
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
-// Endpoint to extract text and analyze with Ollama API
-app.post("/verify-expiration", async (req, res) => {
+if (!GROQ_API_KEY) {
+  console.error("Error: GROQ_API_KEY is not defined in environment variables.");
+  process.exit(1);
+}
+
+// Initialize Groq SDK
+const groq = new Groq({
+  apiKey: GROQ_API_KEY,
+});
+
+// Configure Multer to store uploaded files in the "uploads" directory
+const upload = multer({ dest: "uploads/" });
+
+// Endpoint to upload and process the PDF
+app.post("/verify-expiration", upload.single("pdf"), async (req, res) => {
   try {
-    const { pdfPath } = req.body;
-
-    if (!pdfPath) {
-      return res.status(400).json({ error: "PDF path is required." });
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded." });
     }
 
-    if (!fs.existsSync(pdfPath)) {
-      return res.status(404).json({ error: "PDF file not found." });
-    }
-
-    // Read PDF file into a buffer
-    const pdfBuffer = fs.readFileSync(pdfPath);
+    const pdfBuffer =
+      req.file.buffer || require("fs").readFileSync(req.file.path);
 
     // Extract text using pdf-parse
     const pdfData = await pdfParse(pdfBuffer);
@@ -37,19 +43,18 @@ app.post("/verify-expiration", async (req, res) => {
       return res.status(404).json({ error: "No text found in the PDF." });
     }
 
-    // Create the prompt for Ollama API
+    // Create the prompt for Groq API
     const prompt = `Analyze this document and respond strictly in raw JSON format without any additional formatting.
+    {
+      "expirationDate": "YYYY-MM-DD or null", 
+      "valid": boolean,                       
+      "confidenceScore": 0-1,                 
+      "reason": "string"
+    }
 
-{
-  "expirationDate": "YYYY-MM-DD or null", 
-  "valid": boolean,                       
-  "confidenceScore": 0-1,                 
-  "reason": "string"
-}
+    Document text:
 
-Document text:
-
-${extractedText}`;
+    ${extractedText}`;
 
     const ollamaResponse = await axios.post(
       "http://127.0.0.1:11434/api/chat",
