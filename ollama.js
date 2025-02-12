@@ -4,7 +4,6 @@ require("dotenv").config();
 const express = require("express");
 const multer = require("multer");
 const pdfParse = require("pdf-parse");
-const Groq = require("groq-sdk");
 
 const app = express();
 const PORT = 3002;
