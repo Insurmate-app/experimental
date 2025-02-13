@@ -55,7 +55,7 @@ This command launches the Ollama API on `http://127.0.0.1:11434` by default.
 
 ### 3. Download the Required Model
 
-Download the `llama3.1` model for the application by running:
+Download the `llama3.2` model for the application by running:
 
 ```bash
 ollama pull llama3.2
@@ -82,7 +82,7 @@ Send a POST request to `/verify-expiration` with the path to a PDF file:
 Using `curl`:
 
 ```bash
-curl -X POST -F "pdf=@/path/to/your/document.pdf" http://localhost:3002/verify-expiration
+curl -X POST -F "pdf=@/path/to/your/document.pdf" http://localhost:3000/verify-expiration
 ```
 
 Using a REST client like Postman:
@@ -109,7 +109,7 @@ Using a REST client like Postman:
 ### Invalid Response from Ollama
 
 - Ensure that the Ollama server is running and accessible at `http://127.0.0.1:11434`.
-- Verify that the `llama3.1` model is downloaded and loaded correctly.
+- Verify that the `llama3.2` model is downloaded and loaded correctly.
 
 ### PDF Not Found
 
@@ -118,9 +118,9 @@ Using a REST client like Postman:
 
 ### Port Conflicts
 
-If port `3000` or `11434` is in use, modify the port in `app.js` or restart the conflicting application.
+If port `3000` or `11434` is in use, modify the port in `ollama.js` or restart the conflicting application.
 
 ## Notes
 
-- The application assumes the Ollama server is running locally. Adjust the API URL in `app.js` if using a remote server.
+- The application assumes the Ollama server is running locally. Adjust the API URL in `ollama.js` if using a remote server.
 - For advanced customization, refer to the Ollama documentation.
