@@ -1,12 +1,12 @@
 "use strict";
 
-require("dotenv").config();
 const express = require("express");
 const multer = require("multer");
 const pdfParse = require("pdf-parse");
+const axios = require("axios");
 
 const app = express();
-const PORT = 3002;
+const PORT = 3000;
 
 // Configure Multer to store uploaded files in the "uploads" directory
 const upload = multer({ dest: "uploads/" });
@@ -45,7 +45,7 @@ app.post("/verify-expiration", upload.single("pdf"), async (req, res) => {
     const ollamaResponse = await axios.post(
       "http://127.0.0.1:11434/api/chat",
       {
-        model: "llama3.1",
+        model: "llama3.2",
         messages: [
           {
             role: "system",

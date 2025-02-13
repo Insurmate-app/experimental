@@ -11,9 +11,9 @@ This application processes PDF files, extracts relevant text, and uses the Ollam
 
 ## Prerequisites
 
-- Node.js (version 14 or higher)
+- Node.js (version 18 or higher)
 - Ollama installed and running locally
-- A PDF file for testing
+- PDF files for testing
 
 ## Installation
 
@@ -22,7 +22,7 @@ This application processes PDF files, extracts relevant text, and uses the Ollam
 Run the following command to install the necessary packages:
 
 ```bash
-npm install
+npm install express multer pdf-parse axios dotenv
 ```
 
 The application uses the following Node.js packages:
@@ -58,7 +58,7 @@ This command launches the Ollama API on `http://127.0.0.1:11434` by default.
 Download the `llama3.1` model for the application by running:
 
 ```bash
-ollama pull llama3.1
+ollama pull llama3.2
 ```
 
 ## Usage
@@ -68,7 +68,7 @@ ollama pull llama3.1
 Run the following command to start the application:
 
 ```bash
-node app.js
+node ollama.js
 ```
 
 The server will start on `http://localhost:3000`.
@@ -82,9 +82,7 @@ Send a POST request to `/verify-expiration` with the path to a PDF file:
 Using `curl`:
 
 ```bash
-curl -X POST -H "Content-Type: application/json" \
-    -d '{"pdfPath": "path/to/your/pdf-file.pdf"}' \
-    http://localhost:3000/verify-expiration
+curl -X POST -F "pdf=@/path/to/your/document.pdf" http://localhost:3002/verify-expiration
 ```
 
 Using a REST client like Postman:
