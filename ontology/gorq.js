@@ -23,7 +23,7 @@ const groq = new Groq({
   apiKey: GROQ_API_KEY,
 });
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer();
 
 app.post("/verify-expiration", upload.single("pdf"), async (req, res) => {
   try {

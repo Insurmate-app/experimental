@@ -8,8 +8,7 @@ const axios = require("axios");
 const app = express();
 const PORT = 3000;
 
-// Configure Multer to store uploaded files in the "uploads" directory
-const upload = multer({ dest: "uploads/" });
+const upload = multer();
 
 // Endpoint to upload and process the PDF
 app.post("/verify-expiration", upload.single("pdf"), async (req, res) => {
